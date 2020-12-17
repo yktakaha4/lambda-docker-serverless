@@ -1,0 +1,19 @@
+service: lambda-docker-serverless
+
+provider:
+  name: aws
+  stage: prod
+  region: ${env:AWS_DEFAULT_REGION}
+  deploymentBucket: ${self:service}-deployment
+
+functions:
+  index:
+    image: "#{AWS::AccountId}.dkr.ecr.#{AWS::Region}.amazonaws.com/${self:service}-repos@${env:IMAGE_DIGEST}"
+    events:
+      - http:
+          path: index
+          method: post
+          cors: true
+
+plugins:
+  - serverless-pseudo-parameters
